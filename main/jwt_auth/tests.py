@@ -1,4 +1,4 @@
-from jwt_auth.serializers import CustomUserSerializer
+from shared.serializers import UserSerializer
 
 from rest_framework import status
 from rest_framework.exceptions import ErrorDetail
@@ -14,10 +14,12 @@ class JwtAuthTests(APITestCase):
         cls.test_user = {'email': 'test@test.com', 'password': 'testtest', 'first_name': 'test_fn',
                          'last_name': 'test_ln'}
 
-        serializer = CustomUserSerializer(data=cls.test_user)
+        serializer = UserSerializer(data=cls.test_user)
         serializer.is_valid()
         serializer.save()
 
+
+class RegistrationTests(JwtAuthTests):
     def test_successful_registration(self):
         payload = {'email': 'user@user.com', 'password': 'useruser', 'first_name': 'user_fn', 'last_name': 'user_ln'}
 
@@ -73,6 +75,8 @@ class JwtAuthTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, expected)
 
+
+class AuthenticationTests(JwtAuthTests):
     def test_successful_login(self):
         payload = {'email': 'test@test.com', 'password': 'testtest', }
 
@@ -124,6 +128,8 @@ class JwtAuthTests(APITestCase):
         response = self.client.post(reverse('token_refresh'), {'refresh': 'ey...'})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
+class UserUpdateTests(JwtAuthTests):
     def test_successful_password_update(self):
         payload = {'password': 'test1test1'}
 

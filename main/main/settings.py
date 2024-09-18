@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'jwt_auth'
+    'shared',
+    'jwt_auth',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -130,10 +132,18 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication'
     ],
     'DEFAULT_RENDERER_CLASSES': [
-        'main.renderers.CustomJSONRenderer',
+        'shared.renderers.CustomJSONRenderer',
         #'rest_framework.renderers.JSONRenderer',
         #'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-AUTH_USER_MODEL = 'jwt_auth.CustomUser'
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DRF-BOILERPLATE',
+    'DESCRIPTION': 'BOILERPLATE FOR MOBILE APPS',
+    'VERSION': '0.0.1',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+AUTH_USER_MODEL = 'shared.User'
