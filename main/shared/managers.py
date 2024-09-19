@@ -27,14 +27,3 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
 
         return self.create_user(email, password, first_name, last_name, **extra_fields)
-
-    def update_user(self, instance, **updated_field):
-        for field, value in updated_field.items():
-            if field != 'password':
-                setattr(instance, field, value)
-            else:
-                instance.set_password(updated_field.get('password'))
-
-        instance.save()
-
-        return instance

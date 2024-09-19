@@ -3,7 +3,6 @@ from rest_framework.status import (is_client_error, is_informational, is_redirec
 
 
 class CustomJSONRenderer(JSONRenderer):
-
     def render(self, data, accepted_media_type=None, renderer_context=None):
         status_code = renderer_context['response'].status_code
 

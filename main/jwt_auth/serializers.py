@@ -1,19 +1,21 @@
 from shared.models import User
+from shared.serializers import UserSerializer
 
 from rest_framework import serializers
 
 
-class UpdateUserSerializer(serializers.Serializer):
-    def update(self, instance, validated_data):
-        user = User.objects.update_user(instance, **validated_data)
-        return user
+class UpdateUserSerializer(UserSerializer):
+    password = None
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name']
 
 
-class UpdateUserPasswordSerializer(UpdateUserSerializer):
+class UpdatePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, max_length=30)
 
-
-class UpdateUserFieldsSerializer(UpdateUserSerializer):
-    email = serializers.EmailField()
-    first_name = serializers.CharField(max_length=30)
-    last_name = serializers.CharField(max_length=30)  # If you need to update other fields. Add them here
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance

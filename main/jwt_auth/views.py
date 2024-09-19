@@ -2,7 +2,7 @@ from django.db.utils import IntegrityError
 
 from shared.serializers import UserSerializer
 
-from jwt_auth.serializers import UpdateUserFieldsSerializer, UpdateUserPasswordSerializer
+from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer
 
 from rest_framework.decorators import (api_view, permission_classes)
 from rest_framework.permissions import IsAuthenticated
@@ -54,7 +54,7 @@ def who_am_i(request):
 
 @extend_schema(
     description="Update user's password.",
-    request=UpdateUserPasswordSerializer,
+    request=UpdatePasswordSerializer,
     responses={
         200: UserSerializer
     },
@@ -62,7 +62,7 @@ def who_am_i(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_password(request):
-    serializer = UpdateUserPasswordSerializer(request.user, data=request.data)
+    serializer = UpdatePasswordSerializer(request.user, data=request.data)
 
     if serializer.is_valid() is False:
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -75,7 +75,7 @@ def update_password(request):
 
 @extend_schema(
     description="Update user's informations.",
-    request=UpdateUserFieldsSerializer,
+    request=UpdateUserSerializer,
     responses={
         200: UserSerializer
     },
@@ -83,7 +83,7 @@ def update_password(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user(request):
-    serializer = UpdateUserFieldsSerializer(request.user, data=request.data)
+    serializer = UpdateUserSerializer(request.user, data=request.data)
 
     if serializer.is_valid() is False:
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
