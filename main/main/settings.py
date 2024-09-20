@@ -136,6 +136,7 @@ REST_FRAMEWORK = {
         'shared.renderers.CustomJSONRenderer',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'EXCEPTION_HANDLER': 'drf_standardized_errors.handler.exception_handler',
 }
 
 SPECTACULAR_SETTINGS = {
@@ -146,3 +147,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 AUTH_USER_MODEL = 'shared.User'
+
+MAILJET_KEY = '712dbece0814eaf57a6d46abafcdc8dd'
+MAILJET_SECRET = 'e88182d3c0ca7a0f46e5e3c3169e1d8c'

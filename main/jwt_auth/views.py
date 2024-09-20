@@ -1,13 +1,17 @@
+import jwt
+from shared.models import User
+from django.conf import settings
 from django.db.utils import IntegrityError
-from drf_spectacular.utils import extend_schema
-from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer
-from rest_framework.decorators import (api_view, permission_classes)
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED)
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
 from shared.serializers import UserSerializer
+from drf_spectacular.utils import extend_schema
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view, permission_classes
+from jwt_auth.utils import get_reset_token, send_password_reset_email
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer, ResetPasswordSerializer, ResetPasswordConfirmSerializer
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR
 
 
 @extend_schema(description='Register a new user.', request=UserSerializer,
@@ -74,6 +78,52 @@ def update_user(request):
         return Response(errors, status=HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def reset_password(request):
-    return Response({'TODO': 'TODO'})
+    serializer = ResetPasswordSerializer(data=request.data)
+
+    if serializer.is_valid() is False:
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    email = serializer.validated_data['email']
+
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response('No user with that email.', status=HTTP_400_BAD_REQUEST)
+
+    reset_token = get_reset_token(email, settings.SECRET_KEY)
+
+    status_code, response = send_password_reset_email(email, reset_token)
+
+    if status_code != 200:
+        return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+    return Response(status=HTTP_200_OK)
+
+
+@api_view(['PUT'])
+def reset_password_confirm(request):
+    serializer = ResetPasswordConfirmSerializer(data=request.data)
+
+    if serializer.is_valid() is False:
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    token = serializer.validated_data['token']
+    password = serializer.validated_data['password']
+
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        return Response('Token expired.', status=HTTP_400_BAD_REQUEST)
+    except jwt.InvalidTokenError:
+        return Response('Invalid token.', status=HTTP_400_BAD_REQUEST)
+
+    email = payload['email']
+
+    user = User.objects.get(email=email)
+    user.set_password(password)
+
+    user = user.save()
+
+    return Response(status=HTTP_200_OK)

@@ -1,8 +1,8 @@
 from django.db import models
+from shared.managers import UserManager
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-from shared.managers import UserManager
 
 
 class User(AbstractUser):
