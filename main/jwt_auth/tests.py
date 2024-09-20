@@ -5,7 +5,9 @@ from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 from rest_framework.test import (APIClient, APITestCase)
 
-
+"""
+IMPORTANT: to run the tests, you need to have the Basic Authentication activated in your Django settings.
+"""
 class JwtAuthTests(APITestCase):
     @classmethod
     def setUpTestData(cls):
