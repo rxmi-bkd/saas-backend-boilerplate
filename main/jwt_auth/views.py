@@ -16,8 +16,8 @@ from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer,
 
 
 @extend_schema(
-    summary="Register a new user",
-    description="Register a new user and return JWT tokens (refresh and access).",
+    summary='Register a new user',
+    description='Register a new user and return JWT tokens (refresh and access).',
     request=UserSerializer,
     responses={
         HTTP_201_CREATED: TokenObtainPairSerializer,
@@ -38,7 +38,7 @@ def register(request):
 
 
 @extend_schema(
-    summary="Get current user details",
+    summary='Get current user details',
     description="Return the authenticated user's details.",
     responses={
         HTTP_200_OK: UserSerializer,
@@ -54,7 +54,7 @@ def who_am_i(request):
 
 
 @extend_schema(
-    summary="Update user password",
+    summary='Update user password',
     description="Update the authenticated user's password.",
     request=UpdatePasswordSerializer,
     responses={
@@ -75,7 +75,7 @@ def update_password(request):
 
 
 @extend_schema(
-    summary="Update user profile",
+    summary='Update user profile',
     description="Update the authenticated user's profile information.",
     request=UpdateUserSerializer,
     responses={
@@ -96,8 +96,8 @@ def update_user(request):
 
 
 @extend_schema(
-    summary="Request password reset",
-    description="Request a password reset for a user by providing their email address.",
+    summary='Request password reset',
+    description='Request a password reset for a user by providing their email address.',
     request=ResetPasswordSerializer,
     responses={
         HTTP_200_OK: None,
@@ -127,8 +127,8 @@ def reset_password(request):
 
 
 @extend_schema(
-    summary="Confirm password reset",
-    description="Confirm a password reset using a token sent via email.",
+    summary='Confirm password reset',
+    description='Confirm a password reset using a token sent via email.',
     request=ResetPasswordConfirmSerializer,
     responses={
         HTTP_200_OK: None,
