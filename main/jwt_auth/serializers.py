@@ -27,3 +27,16 @@ class ResetPasswordSerializer(serializers.Serializer):
 class ResetPasswordConfirmSerializer(serializers.Serializer):
     token = serializers.CharField()
     password = serializers.CharField(min_length=8, max_length=30)
+
+
+class ErrorSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    detail = serializers.CharField()
+    attr = serializers.CharField()
+
+
+class StandardizedErrorSerializer(serializers.Serializer):
+    type = serializers.CharField()
+    errors = ErrorSerializer(many=True)
+
+
