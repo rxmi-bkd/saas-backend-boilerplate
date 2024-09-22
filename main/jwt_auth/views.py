@@ -3,7 +3,7 @@ import jwt
 from shared.models import User
 from django.conf import settings
 from rest_framework.response import Response
-from shared.serializers import UserSerializer
+from shared.serializers import UserSerializer, StandardizedErrorSerializer
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,7 +12,7 @@ from jwt_auth.utils import get_reset_token, send_password_reset_email
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_404_NOT_FOUND
-from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer, ResetPasswordSerializer, ResetPasswordConfirmSerializer, StandardizedErrorSerializer
+from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer, ResetPasswordSerializer, ResetPasswordConfirmSerializer
 
 
 @extend_schema(

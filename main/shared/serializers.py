@@ -11,3 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
+
+
+class ErrorSerializer(serializers.Serializer):
+    code = serializers.CharField()
+    detail = serializers.CharField()
+    attr = serializers.CharField()
+
+
+class StandardizedErrorSerializer(serializers.Serializer):
+    type = serializers.CharField()
+    errors = ErrorSerializer(many=True)
