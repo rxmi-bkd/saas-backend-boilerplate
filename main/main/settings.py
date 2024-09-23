@@ -27,6 +27,23 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_TYPE = 'JWT'  # 'SESSION' or 'JWT'
+
+if AUTH_TYPE == 'JWT':
+    auth_app = 'jwt_auth'
+    default_auth_class = 'rest_framework_simplejwt.authentication.JWTAuthentication'
+    MAILJET_KEY = '712dbece0814eaf57a6d46abafcdc8dd'
+    MAILJET_SECRET = 'e88182d3c0ca7a0f46e5e3c3169e1d8c'
+elif AUTH_TYPE == 'SESSION':
+    auth_app = 'session_auth'
+    default_auth_class = 'rest_framework.authentication.SessionAuthentication'
+    CSRF_COOKIE_SAMESITE = 'Strict'
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    CSRF_USE_SESSIONS = False
+    CSRF_COOKIE_HTTPONLY = False
+    CSRF_COOKIE_NAME = 'csrftoken'
+else:
+    raise ValueError('AUTH_TYPE must be either "JWT" or "SESSION"')
 
 # Application definition
 
@@ -39,9 +56,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'shared',
-    'jwt_auth',
     'drf_spectacular',
-    'rest_framework_simplejwt'
+    'drf_standardized_errors',
+    auth_app,
 ]
 
 MIDDLEWARE = [
@@ -129,8 +146,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        default_auth_class,
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'shared.renderers.CustomJSONRenderer',
@@ -140,13 +156,10 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'DRF-BOILERPLATE',
-    'DESCRIPTION': 'BOILERPLATE FOR MOBILE APPS',
+    'TITLE': 'DRF JSON API',
+    'DESCRIPTION': 'Django REST framework template for JSON API',
     'VERSION': '0.0.1',
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
 AUTH_USER_MODEL = 'shared.User'
-
-MAILJET_KEY = '712dbece0814eaf57a6d46abafcdc8dd'
-MAILJET_SECRET = 'e88182d3c0ca7a0f46e5e3c3169e1d8c'

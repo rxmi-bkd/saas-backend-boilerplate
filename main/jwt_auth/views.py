@@ -3,16 +3,16 @@ import jwt
 from shared.models import User
 from django.conf import settings
 from rest_framework.response import Response
-from shared.serializers import UserSerializer, StandardizedErrorSerializer
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import NotFound, ValidationError
-from jwt_auth.utils import get_reset_token, send_password_reset_email
 from rest_framework.decorators import api_view, permission_classes
+from jwt_auth.utils import get_reset_token, send_password_reset_email
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from jwt_auth.serializers import ResetPasswordSerializer, ResetPasswordConfirmSerializer
+from shared.serializers import UserSerializer, StandardizedErrorSerializer, UpdateUserSerializer, UpdatePasswordSerializer
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_404_NOT_FOUND
-from jwt_auth.serializers import UpdateUserSerializer, UpdatePasswordSerializer, ResetPasswordSerializer, ResetPasswordConfirmSerializer
 
 
 @extend_schema(
@@ -39,7 +39,6 @@ def register(request):
 
 @extend_schema(
     summary='Get current user details',
-    description="Return the authenticated user's details.",
     responses={
         HTTP_200_OK: UserSerializer,
         HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer,
