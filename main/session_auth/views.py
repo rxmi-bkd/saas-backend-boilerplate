@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 from shared.serializers import UserSerializer, StandardizedErrorSerializer, UpdateUserSerializer, UpdatePasswordSerializer
 
 
@@ -24,7 +24,7 @@ from shared.serializers import UserSerializer, StandardizedErrorSerializer, Upda
 def register(request):
     serializer = UserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    
+
     user = serializer.save()
 
     return Response(status=HTTP_201_CREATED)
@@ -34,7 +34,7 @@ def register(request):
     summary='Get current user details',
     responses={
         HTTP_200_OK: UserSerializer,
-        HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer,
+        HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
 )
 @api_view()
@@ -52,7 +52,7 @@ def who_am_i(request):
     responses={
         HTTP_200_OK: None,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
-        HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer
+        HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
 )
 @sensitive_post_parameters()
@@ -77,7 +77,7 @@ def login(request):
     description='Logout a user.',
     responses={
         HTTP_200_OK: None,
-        HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer
+        HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
 )
 @csrf_protect
@@ -97,7 +97,7 @@ def logout(request):
     responses={
         HTTP_200_OK: None,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
-        HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer,
+        HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
 )
 @csrf_protect
@@ -119,7 +119,7 @@ def update_password(request):
     responses={
         HTTP_200_OK: None,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
-        HTTP_401_UNAUTHORIZED: StandardizedErrorSerializer,
+        HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
 )
 @csrf_protect
@@ -132,3 +132,5 @@ def update_user(request):
     user = serializer.save()
 
     return Response(status=HTTP_200_OK)
+
+# TODO: Add reset password feature

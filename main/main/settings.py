@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -27,16 +26,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_TYPE = 'JWT'  # 'SESSION' or 'JWT'
+# AUTH_TYPE must be 'SESSION' or 'JWT'
+AUTH_TYPE = 'SESSION'
 
 if AUTH_TYPE == 'JWT':
     auth_app = 'jwt_auth'
     default_auth_class = 'rest_framework_simplejwt.authentication.JWTAuthentication'
-    MAILJET_KEY = '712dbece0814eaf57a6d46abafcdc8dd'
-    MAILJET_SECRET = 'e88182d3c0ca7a0f46e5e3c3169e1d8c'
 elif AUTH_TYPE == 'SESSION':
     auth_app = 'session_auth'
     default_auth_class = 'rest_framework.authentication.SessionAuthentication'
+
     CSRF_COOKIE_SAMESITE = 'Strict'
     SESSION_COOKIE_SAMESITE = 'Strict'
     CSRF_USE_SESSIONS = False
@@ -44,8 +43,6 @@ elif AUTH_TYPE == 'SESSION':
     CSRF_COOKIE_NAME = 'csrftoken'
 else:
     raise ValueError('AUTH_TYPE must be either "JWT" or "SESSION"')
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -163,3 +160,6 @@ SPECTACULAR_SETTINGS = {
 }
 
 AUTH_USER_MODEL = 'shared.User'
+
+MAILJET_KEY = '712dbece0814eaf57a6d46abafcdc8dd'
+MAILJET_SECRET = 'e88182d3c0ca7a0f46e5e3c3169e1d8c'

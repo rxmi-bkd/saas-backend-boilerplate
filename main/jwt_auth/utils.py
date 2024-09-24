@@ -1,5 +1,6 @@
 import jwt
 import uuid
+
 # from mailjet_rest import Client
 from django.conf import settings
 from datetime import datetime, timedelta
