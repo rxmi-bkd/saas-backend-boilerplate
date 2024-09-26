@@ -9,14 +9,13 @@ from django.views.decorators.debug import sensitive_post_parameters
 from rest_framework.exceptions import NotAuthenticated, AuthenticationFailed
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
-from shared.serializers import UserSerializer, StandardizedErrorSerializer, UpdateUserSerializer, UpdatePasswordSerializer
+from shared.serializers import UserSerializer, StandardizedErrorSerializer, UpdateUserSerializer, PasswordSerializer
 
 
 @extend_schema(
-    summary='Register a new user',
     request=UserSerializer,
     responses={
-        HTTP_201_CREATED: None,
+        HTTP_201_CREATED: UserSerializer,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
     }
 )
@@ -27,11 +26,11 @@ def register(request):
 
     user = serializer.save()
 
-    return Response(status=HTTP_201_CREATED)
+    return Response(UserSerializer(user).data, status=HTTP_201_CREATED)
 
 
 @extend_schema(
-    summary='Get current user details',
+    summary='Retrieve the information of the authenticated user',
     responses={
         HTTP_200_OK: UserSerializer,
         HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
@@ -46,11 +45,9 @@ def who_am_i(request):
 
 
 @extend_schema(
-    summary='Login',
-    description='Login a user and return a session cookie.',
     request=LoginSerializer,
     responses={
-        HTTP_200_OK: None,
+        HTTP_200_OK: UserSerializer,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
         HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
@@ -70,11 +67,10 @@ def login(request):
 
     auth_login(request, user)
 
-    return Response(status=HTTP_200_OK)
+    return Response(UserSerializer(user).data, status=HTTP_200_OK)
 
 
 @extend_schema(
-    description='Logout a user.',
     responses={
         HTTP_200_OK: None,
         HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
@@ -91,9 +87,7 @@ def logout(request):
 
 
 @extend_schema(
-    summary='Update user password',
-    description="Update the authenticated user's password.",
-    request=UpdatePasswordSerializer,
+    request=PasswordSerializer,
     responses={
         HTTP_200_OK: None,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
@@ -104,7 +98,7 @@ def logout(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_password(request):
-    serializer = UpdatePasswordSerializer(request.user, data=request.data)
+    serializer = PasswordSerializer(request.user, data=request.data)
     serializer.is_valid(raise_exception=True)
 
     user = serializer.save()
@@ -113,11 +107,9 @@ def update_password(request):
 
 
 @extend_schema(
-    summary='Update user profile',
-    description="Update the authenticated user's profile information.",
     request=UpdateUserSerializer,
     responses={
-        HTTP_200_OK: None,
+        HTTP_200_OK: UserSerializer,
         HTTP_400_BAD_REQUEST: StandardizedErrorSerializer,
         HTTP_403_FORBIDDEN: StandardizedErrorSerializer,
     }
@@ -131,6 +123,4 @@ def update_user(request):
 
     user = serializer.save()
 
-    return Response(status=HTTP_200_OK)
-
-# TODO: Add reset password feature
+    return Response(UserSerializer(user).data, status=HTTP_200_OK)

@@ -13,13 +13,17 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class UpdatePasswordSerializer(serializers.Serializer):
+class PasswordSerializer(serializers.Serializer):
     password = serializers.CharField(min_length=8, max_length=30)
 
     def update(self, instance, validated_data):
         instance.set_password(validated_data['password'])
         instance.save()
         return instance
+
+
+class EmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
 
 
 class UpdateUserSerializer(UserSerializer):
