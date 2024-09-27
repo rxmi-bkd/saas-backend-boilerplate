@@ -7,7 +7,6 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('qrcodes/', include('qrcodes.urls')),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('', lambda request: redirect('docs/', permanent=True)),
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),

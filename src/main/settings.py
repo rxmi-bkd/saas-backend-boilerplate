@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'shared',
     'drf_spectacular',
     'drf_standardized_errors',
-    'qrcodes',
 ]
 
 MIDDLEWARE = [
@@ -172,7 +171,7 @@ else:
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'DRF JSON API',
+    'TITLE': 'JSON API',
     'DESCRIPTION': 'Django REST Framework template for JSON API',
     'VERSION': '0.0.1',
     'SERVE_INCLUDE_SCHEMA': False,
